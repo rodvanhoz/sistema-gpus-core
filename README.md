@@ -1,5 +1,7 @@
 # sistema-gpus-core
 
+[![Build Status](https://app.travis-ci.com/rodvanhoz/sistema-gpus-core.svg?branch=develop)](https://app.travis-ci.com/rodvanhoz/sistema-gpus-core)
+
 FIXME
 
 ## Prerequisites
