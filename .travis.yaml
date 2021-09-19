@@ -1,0 +1,27 @@
+sudo: required
+
+language: clojure
+lein: 2.9.5
+jdk:
+  - oraclejdk8
+
+services:
+
+
+addons:
+  
+before_install:
+  
+
+env:
+  - MODULE=core
+ 
+install: true
+
+script: lein test
+
+cache:
+  directories:
+  - $HOME/.m2
+
+dist: trusty
