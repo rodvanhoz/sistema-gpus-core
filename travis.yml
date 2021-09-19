@@ -19,8 +19,11 @@ env:
 install: true
 
 script: lein test
-    on: 
-      branch: develop
+
+branches:
+  only:
+  - main
+  - develop
 
 
 cache:
