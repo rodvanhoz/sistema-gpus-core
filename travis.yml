@@ -20,12 +20,6 @@ install: true
 
 script: lein test
 
-branches:
-  only:
-  - main
-  - develop
-
-
 cache:
   directories:
   - $HOME/.m2
