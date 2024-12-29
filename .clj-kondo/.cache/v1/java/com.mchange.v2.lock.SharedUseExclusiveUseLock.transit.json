@@ -1,1 +1,0 @@
-["^ ","~:members",["^ ","acquireShared",["~#set",[["^ ","~:flags",["^2",["~:method","~:public"]]]]],"relinquishShared",["^2",[["^ ","^3",["^2",["^4","^5"]]]]],"acquireExclusive",["^2",[["^ ","^3",["^2",["^4","^5"]]]]],"relinquishExclusive",["^2",[["^ ","^3",["^2",["^4","^5"]]]]]]]
