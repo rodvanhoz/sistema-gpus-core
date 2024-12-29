@@ -16,4 +16,4 @@ To start a web server for the application, run:
 
 ## License
 
-Copyright © 2021 FIXME
+Copyright © 2024 FIXME

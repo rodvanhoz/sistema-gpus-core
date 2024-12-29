@@ -1,0 +1,1 @@
+["^ ","~:members",["^ ","<init>",["~#set",[["^ ","~:flags",["^2",["~:method","~:public"]]]]],"addSomethingChangedListener",["^2",[["^ ","^3",["^2",["^4","^5"]]]]],"removeSomethingChangedListener",["^2",[["^ ","^3",["^2",["^4","^5"]]]]],"fireSomethingChanged",["^2",[["^ ","^3",["^2",["^4","^5"]]]]]]]
