@@ -1,0 +1,27 @@
+name: Clojure CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Leiningen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y leiningen
+
+      - name: Install dependencies
+        run: lein deps
+
+      - name: Check Format
+        run: lein lint/check
+
+      - name: Run tests
+        run: lein test :all
