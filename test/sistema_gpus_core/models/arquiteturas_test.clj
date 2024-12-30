@@ -31,7 +31,7 @@
     (let [arq-id (uuid-from-string "a2be633c-46f3-47b9-896f-57fc44a65d61")
           _      (model/update-item! (arq/->Arquiteturas)
                                      {:id_arquitetura arq-id}
-                                     :nome_arquitetura "Maxwell 2 Updated")
+                                     {:nome_arquitetura "Maxwell 2 Updated"})
           item   (model/get-item (arq/->Arquiteturas) :id_arquitetura arq-id)]
       (is (= "Maxwell 2 Updated" (:nome_arquitetura item)))))
 

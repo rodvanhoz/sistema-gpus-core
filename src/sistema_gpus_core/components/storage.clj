@@ -1,16 +1,17 @@
 (ns sistema-gpus-core.components.storage
   (:require [com.stuartsierra.component :as component]
-            [toucan.db :as db]))
+            [toucan.db :as db]
+            [clojure.tools.logging :as log]))
 
 (defrecord PostgresStorage [db-spec]
   component/Lifecycle
   (start [this]
-    (println "Iniciando PostgresStorage...")
+    (log/info "Initializing PostgresStorage...")
     (db/set-default-db-connection! db-spec)
     (assoc this :connected true))
 
   (stop [this]
-    (println "Parando PostgresStorage...")
+    (log/info "Stoping PostgresStorage...")
     (db/clear-default-db-connection!)
     (assoc this :connected false)))
 

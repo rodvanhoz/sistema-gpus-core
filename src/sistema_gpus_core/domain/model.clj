@@ -11,6 +11,6 @@
   (read-all [this] "Lista todos os registros de um modelo.")
   (get-item [this k v] "Obtém um item pelo ID.")
   (put-item! [this entity] "Insere um item.")
-  (update-item! [this updates k v] "Atualiza um item.")
+  (update-item! [this clause kvs] "Atualiza um item.")
   (delete-item! [this id] "Deleta um item.")
   (items-count [this] "Retorna a contagem total de registros na tabela."))

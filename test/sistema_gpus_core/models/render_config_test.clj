@@ -34,7 +34,7 @@
     (let [rid (uuid-from-string "12b9b661-9e9e-4cc2-a421-6ecf6adc7741")]
       (model/update-item! (rc/->RenderConfig)
                           {:id_render_config rid}
-                          :sm_count 64)
+                          {:sm_count 64})
       (is (= 64
              (:sm_count (model/get-item (rc/->RenderConfig) :id_render_config rid))))))
 

@@ -32,7 +32,7 @@
   ;; 4) update-item!
   (testing "update-item!"
     (let [jid (uuid-from-string "60ed2c10-dc21-4065-a24a-6f428bce23d3")]
-      (model/update-item! (jogos/->Jogos) {:id_jogo jid} :nome_jogo "ZELDA TOTK")
+      (model/update-item! (jogos/->Jogos) {:id_jogo jid} {:nome_jogo "ZELDA TOTK"})
       (is (= "ZELDA TOTK" (:nome_jogo (model/get-item (jogos/->Jogos) :id_jogo jid))))))
 
   ;; 5) delete-item!

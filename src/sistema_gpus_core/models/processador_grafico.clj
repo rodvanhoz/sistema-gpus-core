@@ -35,8 +35,9 @@
   (put-item! [this entity]
     (db/insert! (model-name this) (transform this entity)))
 
-  (update-item! [this updates k v]
-    (db/update-where! (model-name this) updates k v))
+  (update-item! [this clause kvs]
+    (let [fn-update-where (partial db/update-where! (model-name this) clause)]
+      (apply fn-update-where (->> kvs (seq) (flatten)))))
 
   (delete-item! [this id]
     (db/simple-delete! (model-name this) {:id_proc_grafico id}))

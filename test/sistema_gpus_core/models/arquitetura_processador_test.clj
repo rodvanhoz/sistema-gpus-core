@@ -35,7 +35,7 @@
     (let [aid (uuid-from-string "3d4430a3-244c-4547-9572-f2af864b4648")]
       (model/update-item! (ap/->ArquiteturaProcessador)
                           {:id_arquitetura_proc aid}
-                          :id_arquitetura (uuid-from-string "a2be633c-46f3-47b9-896f-57fc44a65d61"))
+                          {:id_arquitetura (uuid-from-string "a2be633c-46f3-47b9-896f-57fc44a65d61")})
       (is (= (uuid-from-string "a2be633c-46f3-47b9-896f-57fc44a65d61")
              (:id_arquitetura (model/get-item (ap/->ArquiteturaProcessador)
                                               :id_arquitetura_proc aid))))))

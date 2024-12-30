@@ -35,7 +35,7 @@
     (let [cid (uuid-from-string "5a9ece7c-68fe-499a-9039-b8897af1cad6")]
       (model/update-item! (cj/->ConfiguracoesJogos)
                           {:id_configuracao_jogo cid}
-                          :id_jogo (uuid-from-string "b17fda4d-b019-4a12-9825-f53d219fbad6"))
+                          {:id_jogo (uuid-from-string "b17fda4d-b019-4a12-9825-f53d219fbad6")})
       (is (= (uuid-from-string "b17fda4d-b019-4a12-9825-f53d219fbad6")
              (:id_jogo (model/get-item (cj/->ConfiguracoesJogos)
                                        :id_configuracao_jogo cid))))))

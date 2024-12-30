@@ -34,7 +34,7 @@
     (let [pid (uuid-from-string "ca9ca528-ff65-44aa-b46a-1c8fb4a90a00")]
       (model/update-item! (pg/->ProcessadorGrafico)
                           {:id_proc_grafico pid}
-                          :nome_gpu "GTX 1080 Updated")
+                          {:nome_gpu "GTX 1080 Updated"})
       (is (= "GTX 1080 Updated"
              (:nome_gpu (model/get-item (pg/->ProcessadorGrafico) :id_proc_grafico pid))))))
 
