@@ -10,7 +10,7 @@
 ;; Declaramos uma var global para armazenar a instância do container
 (defonce ^:dynamic *pg-container* nil)
 
-(def resource-path "/home/rodrigo/Documents/projects/sistema-gpus-core/test/sistema_gpus_core/resources/databases")
+(def resource-path "sistema_gpus_core/resources/databases")
 
 ;; -----------------------------------------------------------------------------
 ;; 1) Configuração do Container
@@ -67,21 +67,51 @@
 (defn- apply-baseline!
   "Carrega o arquivo baseline.sql e executa no banco de dados `conn`."
   [conn]
-  (prn "===============> " (-> (java.io.File. ".") .getAbsolutePath))
-  (let [sql (slurp (io/resource "sistema_gpus_core/resources/databases/baseline.sql"))]
+  (let [sql (slurp (io/resource (format "%s/baseline.sql" resource-path)))]
     (Thread/sleep 200)
     (jdbc/execute! conn [sql])))
 
 ;; -----------------------------------------------------------------------------
 ;; 4) Funções de mock (uma para cada model)
 ;; -----------------------------------------------------------------------------
-
-;; Por enquanto, só o mock de GPUs
 (defn apply-mock-gpus!
   "Executa o script `gpus_database.sql` que insere gpus de teste."
   [conn]
-  (let [sql (slurp (io/resource "sistema_gpus_core/resources/databases/gpus_database.sql"))]
+  (let [sql (slurp (io/resource (format "%s/gpus_database.sql" resource-path)))]
     (jdbc/execute! conn [sql])))
 
-;; Depois você pode criar apply-mock-processadores!, apply-mock-arquiteturas!, etc.
-;; Cada qual lendo seu script .sql respectivo.
+(defn apply-mock-arquitetura-processador!
+  "Executa o script `gpus_database.sql` que insere gpus de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/arq_processador_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-caracteristicas-graficas!
+  "Executa o script `gpus_database.sql` que insere gpus de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/carac_graficas_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-arquiteturas!
+  "Executa o script `arquiteturas_database.sql` que insere arquiteturas de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/arquiteturas_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-configuracoes-jogos!
+  "Executa o script `arquiteturas_database.sql` que insere arquiteturas de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/conf_jogos_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-configuracoes!
+  "Executa o script `configuracoes_database.sql` que insere configuracoes de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/configuracoes_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-dados-processador!
+  "Executa o script `dados_processador.sql` que insere dados_processador de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/dados_processador_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))

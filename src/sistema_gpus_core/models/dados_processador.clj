@@ -1,13 +1,15 @@
 (ns sistema-gpus-core.models.dados-processador
   (:require [toucan.models :as models]
-            [sistema-gpus-core.domain.model :refer [ModelProtocol]]
+            [sistema-gpus-core.domain.model :refer [ModelProtocol transform model-name]]
             [toucan.db :as db]))
 
 (models/defmodel DadosProcessador :dados_processador)
 
-(extend-type DadosProcessador
+(defrecord DadosProcessadorModel [])
+
+(extend-type DadosProcessadorModel
   ModelProtocol
-  (table-name [_] :dados_processador)
+  (model-name [_] DadosProcessador)
   (primary-key [_ entity] (:id_dados_processador entity))
   (default-fields [_]
     [:id_dados_processador
@@ -23,19 +25,24 @@
 
   ;; CRUD
   (read-all [this]
-    (db/select (table-name this)))
+    (db/select (model-name this)))
 
-  (get-item [this id]
-    (db/select-one (table-name this) {:id_dados_processador id}))
+  (get-item [this k v]
+    (db/select-one (model-name this) k v))
 
   (put-item! [this entity]
-    (db/insert! (table-name this) (transform this entity)))
+    (db/insert! (model-name this) (transform this entity)))
 
-  (update-item! [this id updates]
-    (db/update! (table-name this) {:id_dados_processador id} updates))
+  (update-item! [this updates k v]
+    (db/update-where! (model-name this) updates k v))
 
   (delete-item! [this id]
-    (db/delete! (table-name this) {:id_dados_processador id}))
+    (db/simple-delete! (model-name this) {:id_dados_processador id}))
 
   (items-count [this]
-    (db/select-one [(str "SELECT COUNT(*) AS count FROM " (name (table-name this)))])))
+    (db/count (model-name this))))
+
+(defn ->DadosProcessador
+  "Retorna um record DadosProcessadorModel que implementa ModelProtocol."
+  []
+  (->DadosProcessadorModel))

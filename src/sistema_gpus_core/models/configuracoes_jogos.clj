@@ -1,13 +1,15 @@
 (ns sistema-gpus-core.models.configuracoes-jogos
   (:require [toucan.models :as models]
-            [sistema-gpus-core.domain.model :refer [ModelProtocol]]
+            [sistema-gpus-core.domain.model :refer [ModelProtocol transform model-name]]
             [toucan.db :as db]))
 
 (models/defmodel ConfiguracaoJogo :configuracoes_jogos)
 
-(extend-type ConfiguracaoJogo
+(defrecord ConfiguracaoJogoModel [])
+
+(extend-type ConfiguracaoJogoModel
   ModelProtocol
-  (table-name [_] :configuracoes_jogos)
+  (model-name [_] ConfiguracaoJogo)
   (primary-key [_ entity] (:id_configuracao_jogo entity))
   (default-fields [_]
     [:id_configuracao_jogo
@@ -19,19 +21,25 @@
 
   ;; CRUD
   (read-all [this]
-    (db/select (table-name this)))
+    (db/select (model-name this)))
 
-  (get-item [this id]
-    (db/select-one (table-name this) {:id_configuracao_jogo id}))
+  (get-item [this k v]
+    (db/select-one (model-name this) k v))
 
   (put-item! [this entity]
-    (db/insert! (table-name this) (transform this entity)))
+    (db/insert! (model-name this) (transform this entity)))
 
-  (update-item! [this id updates]
-    (db/update! (table-name this) {:id_configuracao_jogo id} updates))
+  (update-item! [this updates k v]
+    (db/update-where! (model-name this) updates k v))
 
   (delete-item! [this id]
-    (db/delete! (table-name this) {:id_configuracao_jogo id}))
+    (db/simple-delete! (model-name this) {:id_configuracao_jogo id}))
 
   (items-count [this]
-    (db/select-one [(str "SELECT COUNT(*) AS count FROM " (name (table-name this)))])))
+    (db/count (model-name this))))
+
+;; Passo 4: Para facilitar chamadas, criamos uma função que instancia GPUModel.
+(defn ->ConfiguracoesJogos
+  "Retorna um record GPUModel que implementa ModelProtocol."
+  []
+  (->ConfiguracaoJogoModel))

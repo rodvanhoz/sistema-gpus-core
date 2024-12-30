@@ -1,7 +1,7 @@
 (ns sistema-gpus-core.models.gpus
   (:require
    [clojure.string :as str]
-   [sistema-gpus-core.domain.model :refer [model-name ModelProtocol transform]]
+   [sistema-gpus-core.domain.model :refer [ModelProtocol transform model-name]]
    [toucan.db :as db]
    [toucan.models :as models]))
 
@@ -9,14 +9,14 @@
 (models/defmodel GPUs :gpus)
 
 ;; Passo 2: Criamos um record para implementar ModelProtocol via extend-type.
-(defrecord GPUModel [])
+(defrecord GPUsModel [])
 
 ;; Passo 3: Fazemos o extend-type para GPUModel (e não GPU).
-(extend-type GPUModel
+(extend-type GPUsModel
   ModelProtocol
 
   (model-name [_]
-    "gpus")
+    GPUs)
 
   (primary-key [_ entity]
     (:id_gpu entity))
@@ -46,25 +46,25 @@
   ;; --- CRUD ---
 
   (read-all [this]
-    (db/select GPUs))
+    (db/select (model-name this)))
 
   (get-item [this k v]
-    (db/select-one GPUs k v))
+    (db/select-one (model-name this) k v))
 
   (put-item! [this entity]
-    (db/insert! GPUs (transform this entity)))
+    (db/insert! (model-name this) (transform this entity)))
 
   (update-item! [this updates k v]
-    (db/update-where! GPUs updates k v))
+    (db/update-where! (model-name this) updates k v))
 
   (delete-item! [this id]
-    (db/simple-delete! GPUs {:id_gpu id}))
+    (db/simple-delete! (model-name this) {:id_gpu id}))
 
   (items-count [this]
-    (db/count GPUs)))
+    (db/count (model-name this))))
 
 ;; Passo 4: Para facilitar chamadas, criamos uma função que instancia GPUModel.
-(defn ->GPU
+(defn ->GPUs
   "Retorna um record GPUModel que implementa ModelProtocol."
   []
-  (->GPUModel))
+  (->GPUsModel))

@@ -2,6 +2,8 @@
   :description "Sistema para gerenciar cadastros e testes de GPUs"
   :url "http://example.com/sistema-gpus-core"
   :min-lein-version "2.0.0"
+  :resource-paths ["config" "src/main/resources"]
+  :jvm-opts ["-Duser.timezone=UTC" "-Duser.country=BR" "-Duser.language=pt"]
 
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [compojure "1.6.1"]
