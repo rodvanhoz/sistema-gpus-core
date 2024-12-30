@@ -1,0 +1,15 @@
+INSERT INTO public.arquiteturas
+(id_arquitetura, nome_arquitetura, old_id)
+VALUES('ed2e6c15-8485-4aba-8573-08fd47eacda1'::uuid, 'MMX', 1);
+INSERT INTO public.arquiteturas
+(id_arquitetura, nome_arquitetura, old_id)
+VALUES('e001456e-4691-4755-99ad-ea90ff4f19fd'::uuid, 'SSE', 2);
+INSERT INTO public.arquiteturas
+(id_arquitetura, nome_arquitetura, old_id)
+VALUES('5d997cec-8f40-4a1f-a584-083f7cc5f610'::uuid, 'SSE2', 3);
+INSERT INTO public.arquiteturas
+(id_arquitetura, nome_arquitetura, old_id)
+VALUES('64a2cc9c-e67f-4c2e-bb66-ec98e3286cbf'::uuid, 'SSE3', 4);
+INSERT INTO public.arquiteturas
+(id_arquitetura, nome_arquitetura, old_id)
+VALUES('a2be633c-46f3-47b9-896f-57fc44a65d61'::uuid, 'SSSE3', 5);
