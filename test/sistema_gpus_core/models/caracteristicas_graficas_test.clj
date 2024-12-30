@@ -40,7 +40,7 @@
     (let [target-id (uuid-from-string "03320cda-708b-4ef8-b7eb-95ffbec741d6")
           _         (model/update-item! (cg/->CaracGraficas)
                                         {:id_carac_grafica target-id}
-                                        :open_gl "4.9")
+                                        {:open_gl "4.9"})
           updated   (model/get-item (cg/->CaracGraficas) :id_carac_grafica target-id)]
       (is (= "4.9" (:open_gl updated)))))
 

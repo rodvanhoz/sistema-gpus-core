@@ -35,13 +35,12 @@
                    :id_render_config         (uuid-from-string "12b9b661-9e9e-4cc2-a421-6ecf6adc7741")}
           _      (model/put-item! (gpus/->GPUs) new-gpu)
           result (model/get-item (gpus/->GPUs) :nome_modelo "ASUS SPECIAL GPU BLA")]
-      ;; (is (= new-id (-> result :id_gpu (uuid-from-string))))
       (is (= "ASUS" (:nome_fabricante result)))))
 
 ;; Testar update-item!
   (testing "update-item! atualiza um campo da GPU"
     (let [gpu-id  (uuid-from-string "669e6eb0-6528-489a-ac90-bb3670cb6a78")
-          _       (model/update-item! (gpus/->GPUs) {:id_gpu gpu-id} :nome_modelo "GeForce GTX 770 UPDATED")
+          _       (model/update-item! (gpus/->GPUs) {:id_gpu gpu-id} {:nome_modelo "GeForce GTX 770 UPDATED"})
           updated (model/get-item (gpus/->GPUs) :id_gpu gpu-id)]
       (is (= "GeForce GTX 770 UPDATED" (:nome_modelo updated)))))
 

@@ -32,7 +32,7 @@
   ;; 4) update-item!
   (testing "update-item!"
     (let [pid (uuid-from-string "f8860454-8867-4115-a836-a937bf018693")]
-      (model/update-item! (dp/->DadosProcessador) {:id_dados_processador pid} :socket "LGA1200")
+      (model/update-item! (dp/->DadosProcessador) {:id_dados_processador pid} {:socket "LGA1200"})
       (is (= "LGA1200"
              (:socket (model/get-item (dp/->DadosProcessador) :id_dados_processador pid))))))
 

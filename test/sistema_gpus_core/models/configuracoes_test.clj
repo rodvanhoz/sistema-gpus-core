@@ -33,7 +33,7 @@
   ;; 4) update-item!
   (testing "update-item!"
     (let [cid (uuid-from-string "b82abfb8-138d-47f5-adbb-c139444ab7a5")]
-      (model/update-item! (cfg/->Configuracoes) {:id_configuracao cid} :qualidade_grafica "MEDIUM")
+      (model/update-item! (cfg/->Configuracoes) {:id_configuracao cid} {:qualidade_grafica "MEDIUM"})
       (is (= "MEDIUM"
              (:qualidade_grafica (model/get-item (cfg/->Configuracoes) :id_configuracao cid))))))
 

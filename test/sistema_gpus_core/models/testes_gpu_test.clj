@@ -35,7 +35,7 @@
   ;; 4) update-item!
   (testing "update-item!"
     (let [tid (uuid-from-string "24aa2801-e697-412b-b4cb-a830683f47fa")]
-      (model/update-item! (tg/->TestesGPU) {:id_teste_gpu tid} :avg_fps 200)
+      (model/update-item! (tg/->TestesGPU) {:id_teste_gpu tid} {:avg_fps 200})
       (is (= 200 (:avg_fps (model/get-item (tg/->TestesGPU) :id_teste_gpu tid))))))
 
   ;; 5) delete-item!
