@@ -46,7 +46,6 @@
   (items-count [this]
     (db/count (model-name this))))
 
-;; Passo 4: Para facilitar chamadas, criamos uma função que instancia GPUModel.
 (defn ->Configuracoes
   "Retorna um record ConfiguracoesModel que implementa ModelProtocol."
   []

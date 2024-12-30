@@ -1,13 +1,15 @@
 (ns sistema-gpus-core.models.render-config
   (:require [toucan.models :as models]
-            [sistema-gpus-core.domain.model :refer [ModelProtocol]]
+            [sistema-gpus-core.domain.model :refer [ModelProtocol transform model-name]]
             [toucan.db :as db]))
 
 (models/defmodel RenderConfig :render_config)
 
-(extend-type RenderConfig
+(defrecord RenderConfigModel [])
+
+(extend-type RenderConfigModel
   ModelProtocol
-  (table-name [_] :render_config)
+  (model-name [_] RenderConfig)
   (primary-key [_ entity] (:id_render_config entity))
   (default-fields [_]
     [:id_render_config
@@ -25,19 +27,24 @@
 
   ;; CRUD
   (read-all [this]
-    (db/select (table-name this)))
+    (db/select (model-name this)))
 
-  (get-item [this id]
-    (db/select-one (table-name this) {:id_render_config id}))
+  (get-item [this k v]
+    (db/select-one (model-name this) k v))
 
   (put-item! [this entity]
-    (db/insert! (table-name this) (transform this entity)))
+    (db/insert! (model-name this) (transform this entity)))
 
-  (update-item! [this id updates]
-    (db/update! (table-name this) {:id_render_config id} updates))
+  (update-item! [this updates k v]
+    (db/update-where! (model-name this) updates k v))
 
   (delete-item! [this id]
-    (db/delete! (table-name this) {:id_render_config id}))
+    (db/simple-delete! (model-name this) {:id_render_config id}))
 
   (items-count [this]
-    (db/select-one [(str "SELECT COUNT(*) AS count FROM " (name (table-name this)))])))
+    (db/count (model-name this))))
+
+(defn ->RenderConfig
+  "Retorna um record RenderConfigModel que implementa ModelProtocol."
+  []
+  (->RenderConfigModel))

@@ -51,5 +51,6 @@
     (db/count (model-name this))))
 
 (defn ->CaracGraficas
+  "Retorna um record CaracteristicasGraficasModel que implementa ModelProtocol."
   []
   (->CaracteristicasGraficasModel))

@@ -115,3 +115,33 @@
   [conn]
   (let [sql (slurp (io/resource (format "%s/dados_processador_database.sql" resource-path)))]
     (jdbc/execute! conn [sql])))
+
+(defn apply-mock-jogos!
+  "Executa o script `jogos_database.sql` que insere jogos de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/jogos_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-processador-grafico!
+  "Executa o script `processador_grafico_database.sql` que insere processador_grafico de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/processador_grafico_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-processadores!
+  "Executa o script `processadores_database.sql` que insere processadores de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/processadores_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-render-config!
+  "Executa o script `render_config_database.sql` que insere render_config de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/render_config_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))
+
+(defn apply-mock-testes-gpu!
+  "Executa o script `testes_gpu_database.sql` que insere testes_gpu de teste."
+  [conn]
+  (let [sql (slurp (io/resource (format "%s/testes_gpu_database.sql" resource-path)))]
+    (jdbc/execute! conn [sql])))

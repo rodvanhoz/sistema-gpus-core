@@ -14,11 +14,11 @@
   ;; 1) read-all
   (testing "read-all"
     (let [res (model/read-all (pg/->ProcessadorGrafico))]
-      (is (>= (count res) 1))))
+      (is (= (count res) 4))))
 
   ;; 2) get-item
   (testing "get-item"
-    (let [pid (uuid-from-string "eeee1111-1111-1111-1111-eeeeeeeeeeee")
+    (let [pid (uuid-from-string "ca9ca528-ff65-44aa-b46a-1c8fb4a90a00")
           item (model/get-item (pg/->ProcessadorGrafico) :id_proc_grafico pid)]
       (is (some? item))))
 
@@ -31,16 +31,16 @@
 
   ;; 4) update-item!
   (testing "update-item!"
-    (let [pid (uuid-from-string "eeee2222-2222-2222-2222-eeeeeeeeeeee")]
+    (let [pid (uuid-from-string "ca9ca528-ff65-44aa-b46a-1c8fb4a90a00")]
       (model/update-item! (pg/->ProcessadorGrafico)
-                          {:nome_gpu "GTX 1080 Updated"}
-                          :id_proc_grafico pid)
-      (is (= "GTX 1080 UPDATED"
+                          {:id_proc_grafico pid}
+                          :nome_gpu "GTX 1080 Updated")
+      (is (= "GTX 1080 Updated"
              (:nome_gpu (model/get-item (pg/->ProcessadorGrafico) :id_proc_grafico pid))))))
 
   ;; 5) delete-item!
   (testing "delete-item!"
-    (let [pid (uuid-from-string "eeee3333-3333-3333-3333-eeeeeeeeeeee")]
+    (let [pid (uuid-from-string "ca9ca528-ff65-44aa-b46a-1c8fb4a90a00")]
       (model/delete-item! (pg/->ProcessadorGrafico) pid)
       (is (nil? (model/get-item (pg/->ProcessadorGrafico) :id_proc_grafico pid)))))
 

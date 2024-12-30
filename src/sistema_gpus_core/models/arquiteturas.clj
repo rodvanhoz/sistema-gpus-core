@@ -49,5 +49,6 @@
 
 ;; 4) Função construtora
 (defn ->Arquiteturas
+  "Retorna um record ArquiteturasModel que implementa ModelProtocol."
   []
   (->ArquiteturasModel))
