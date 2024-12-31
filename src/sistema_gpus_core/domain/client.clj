@@ -1,4 +1,4 @@
-(ns sistema-gpus-core.controller.client)
+(ns sistema-gpus-core.domain.client)
 
 (defprotocol ControllerClientProtocol
   "Protocolo que define as operações CRUD no nível de Controller,
