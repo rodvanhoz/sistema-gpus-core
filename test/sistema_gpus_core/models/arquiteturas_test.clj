@@ -18,13 +18,13 @@
 
   (testing "get-item retorna item esperado"
     (let [arq-id (uuid-from-string "e001456e-4691-4755-99ad-ea90ff4f19fd")
-          item   (model/get-item (arq/->Arquiteturas) :id_arquitetura arq-id)]
+          item   (model/get-item (arq/->Arquiteturas) {:id_arquitetura arq-id})]
       (is (= arq-id (-> item :id_arquitetura uuid-from-string)))))
 
   (testing "put-item! insere nova arquitetura"
     (let [nova-arq {:nome_arquitetura "RDNA 5"}
           _        (model/put-item! (arq/->Arquiteturas) nova-arq)
-          result   (model/get-item (arq/->Arquiteturas) :nome_arquitetura "RDNA 5")]
+          result   (model/get-item (arq/->Arquiteturas) {:nome_arquitetura "RDNA 5"})]
       (is (= "RDNA 5" (:nome_arquitetura result)))))
 
   (testing "update-item! atualiza item"
@@ -32,13 +32,13 @@
           _      (model/update-item! (arq/->Arquiteturas)
                                      {:id_arquitetura arq-id}
                                      {:nome_arquitetura "Maxwell 2 Updated"})
-          item   (model/get-item (arq/->Arquiteturas) :id_arquitetura arq-id)]
+          item   (model/get-item (arq/->Arquiteturas) {:id_arquitetura arq-id})]
       (is (= "Maxwell 2 Updated" (:nome_arquitetura item)))))
 
   (testing "delete-item! remove item"
     (let [arq-id (uuid-from-string "a2be633c-46f3-47b9-896f-57fc44a65d61")]
       (model/delete-item! (arq/->Arquiteturas) arq-id)
-      (is (nil? (model/get-item (arq/->Arquiteturas) :id_arquitetura arq-id)))))
+      (is (nil? (model/get-item (arq/->Arquiteturas) {:id_arquitetura arq-id})))))
 
   (testing "items-count retorna contagem"
     (let [cnt (model/items-count (arq/->Arquiteturas))]
