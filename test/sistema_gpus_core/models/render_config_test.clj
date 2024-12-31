@@ -19,14 +19,14 @@
   ;; 2) get-item
   (testing "get-item"
     (let [rid (uuid-from-string "12b9b661-9e9e-4cc2-a421-6ecf6adc7741")
-          item (model/get-item (rc/->RenderConfig) :id_render_config rid)]
+          item (model/get-item (rc/->RenderConfig) {:id_render_config rid})]
       (is (some? item))))
 
   ;; 3) put-item!
   (testing "put-item!"
     (let [novo {:shading_units 4096 :tmus 256 :rops 296}
           _    (model/put-item! (rc/->RenderConfig) novo)
-          achou (model/get-item (rc/->RenderConfig) :rops 296)]
+          achou (model/get-item (rc/->RenderConfig) {:rops 296})]
       (is (some? achou))))
 
   ;; 4) update-item!
@@ -36,13 +36,13 @@
                           {:id_render_config rid}
                           {:sm_count 64})
       (is (= 64
-             (:sm_count (model/get-item (rc/->RenderConfig) :id_render_config rid))))))
+             (:sm_count (model/get-item (rc/->RenderConfig) {:id_render_config rid}))))))
 
   ;; 5) delete-item!
   (testing "delete-item!"
     (let [rid (uuid-from-string "12b9b661-9e9e-4cc2-a421-6ecf6adc7741")]
       (model/delete-item! (rc/->RenderConfig) rid)
-      (is (nil? (model/get-item (rc/->RenderConfig) :id_render_config rid)))))
+      (is (nil? (model/get-item (rc/->RenderConfig) {:id_render_config rid})))))
 
   ;; 6) items-count
   (testing "items-count"

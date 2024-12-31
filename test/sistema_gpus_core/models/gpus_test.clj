@@ -19,7 +19,7 @@
   ;; Testar get-item
   (testing "get-item retorna a GPU esperada"
     (let [gpu-id (uuid-from-string "669e6eb0-6528-489a-ac90-bb3670cb6a78")
-          gpu    (model/get-item (gpus/->GPUs) :id_gpu gpu-id)]
+          gpu    (model/get-item (gpus/->GPUs) {:id_gpu gpu-id})]
       (is (= gpu-id (-> gpu :id_gpu (uuid-from-string))))
       (is (= "NVIDIA" (:nome_fabricante gpu)))))
 
@@ -34,21 +34,21 @@
                    :id_caracteristicas_graficas (uuid-from-string "bb8e8e6b-8c83-401a-a1a0-2964a049de60")
                    :id_render_config         (uuid-from-string "12b9b661-9e9e-4cc2-a421-6ecf6adc7741")}
           _      (model/put-item! (gpus/->GPUs) new-gpu)
-          result (model/get-item (gpus/->GPUs) :nome_modelo "ASUS SPECIAL GPU BLA")]
+          result (model/get-item (gpus/->GPUs) {:nome_modelo "ASUS SPECIAL GPU BLA" :tp_memoria "GDDR6"})]
       (is (= "ASUS" (:nome_fabricante result)))))
 
 ;; Testar update-item!
   (testing "update-item! atualiza um campo da GPU"
     (let [gpu-id  (uuid-from-string "669e6eb0-6528-489a-ac90-bb3670cb6a78")
           _       (model/update-item! (gpus/->GPUs) {:id_gpu gpu-id} {:nome_modelo "GeForce GTX 770 UPDATED"})
-          updated (model/get-item (gpus/->GPUs) :id_gpu gpu-id)]
+          updated (model/get-item (gpus/->GPUs) {:id_gpu gpu-id})]
       (is (= "GeForce GTX 770 UPDATED" (:nome_modelo updated)))))
 
   ;; Testar delete-item!
   (testing "delete-item! remove uma GPU do banco"
     (let [gpu-id (uuid-from-string "a41adbc8-acf0-432e-bd13-a2eb7d66b034")]
       (model/delete-item! (gpus/->GPUs) gpu-id)
-      (is (nil? (model/get-item (gpus/->GPUs) :id_gpu gpu-id)))))
+      (is (nil? (model/get-item (gpus/->GPUs) {:id_gpu gpu-id})))))
 
   ;; Testar items-count
   (testing "items-count retorna a contagem de GPUs"

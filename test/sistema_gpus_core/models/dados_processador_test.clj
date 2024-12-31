@@ -19,14 +19,14 @@
   ;; 2) get-item
   (testing "get-item"
     (let [pid (uuid-from-string "f8860454-8867-4115-a836-a937bf018693")
-          item (model/get-item (dp/->DadosProcessador) :id_dados_processador pid)]
+          item (model/get-item (dp/->DadosProcessador) {:id_dados_processador pid})]
       (is (some? item))))
 
   ;; 3) put-item!
   (testing "put-item!"
     (let [nova {:socket "AM9" :foundry "TSMC"}
           _    (model/put-item! (dp/->DadosProcessador) nova)
-          achou (model/get-item (dp/->DadosProcessador) :socket "AM9")]
+          achou (model/get-item (dp/->DadosProcessador) {:socket "AM9"})]
       (is (some? achou))))
 
   ;; 4) update-item!
@@ -34,13 +34,13 @@
     (let [pid (uuid-from-string "f8860454-8867-4115-a836-a937bf018693")]
       (model/update-item! (dp/->DadosProcessador) {:id_dados_processador pid} {:socket "LGA1200"})
       (is (= "LGA1200"
-             (:socket (model/get-item (dp/->DadosProcessador) :id_dados_processador pid))))))
+             (:socket (model/get-item (dp/->DadosProcessador) {:id_dados_processador pid}))))))
 
   ;; 5) delete-item!
   (testing "delete-item!"
     (let [pid (uuid-from-string "f8860454-8867-4115-a836-a937bf018693")]
       (model/delete-item! (dp/->DadosProcessador) pid)
-      (is (nil? (model/get-item (dp/->DadosProcessador) :id_dados_processador pid)))))
+      (is (nil? (model/get-item (dp/->DadosProcessador) {:id_dados_processador pid})))))
 
   ;; 6) items-count
   (testing "items-count"
