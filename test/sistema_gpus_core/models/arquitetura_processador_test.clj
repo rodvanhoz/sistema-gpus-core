@@ -19,7 +19,7 @@
   ;; 2) get-item
   (testing "get-item"
     (let [aid (uuid-from-string "3d4430a3-244c-4547-9572-f2af864b4648")
-          item (model/get-item (ap/->ArquiteturaProcessador) :id_arquitetura_proc aid)]
+          item (model/get-item (ap/->ArquiteturaProcessador) {:id_arquitetura_proc aid})]
       (is (some? item))))
 
   ;; 3) put-item!
@@ -27,7 +27,7 @@
     (let [novo {:id_arquitetura (uuid-from-string "954fb9a1-f09c-4c6c-a279-ebca7282690d")
                 :id_processador (uuid-from-string "f9ce2969-a573-4e8b-b71c-abc263bcb4a5")}
           _    (model/put-item! (ap/->ArquiteturaProcessador) novo)
-          achou (model/get-item (ap/->ArquiteturaProcessador) :id_arquitetura (uuid-from-string "954fb9a1-f09c-4c6c-a279-ebca7282690d"))]
+          achou (model/get-item (ap/->ArquiteturaProcessador) {:id_arquitetura (uuid-from-string "954fb9a1-f09c-4c6c-a279-ebca7282690d")})]
       (is (some? achou))))
 
   ;; 4) update-item!
@@ -38,13 +38,13 @@
                           {:id_arquitetura (uuid-from-string "a2be633c-46f3-47b9-896f-57fc44a65d61")})
       (is (= (uuid-from-string "a2be633c-46f3-47b9-896f-57fc44a65d61")
              (:id_arquitetura (model/get-item (ap/->ArquiteturaProcessador)
-                                              :id_arquitetura_proc aid))))))
+                                              {:id_arquitetura_proc aid}))))))
 
   ;; 5) delete-item!
   (testing "delete-item!"
     (let [aid (uuid-from-string "3d4430a3-244c-4547-9572-f2af864b4648")]
       (model/delete-item! (ap/->ArquiteturaProcessador) aid)
-      (is (nil? (model/get-item (ap/->ArquiteturaProcessador) :id_arquitetura_proc aid)))))
+      (is (nil? (model/get-item (ap/->ArquiteturaProcessador) {:id_arquitetura_proc aid})))))
 
   ;; 6) items-count
   (testing "items-count"

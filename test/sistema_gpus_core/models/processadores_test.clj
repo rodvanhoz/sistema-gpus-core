@@ -19,7 +19,7 @@
   ;; 2) get-item
   (testing "get-item"
     (let [pid (uuid-from-string "672d0b70-41da-4aa6-abc7-56f670c7c564")
-          item (model/get-item (ps/->Processadores) :id_processador pid)]
+          item (model/get-item (ps/->Processadores) {:id_processador pid})]
       (is (some? item))))
 
   ;; 3) put-item!
@@ -27,7 +27,7 @@
     (let [novo {:nome_fabricante "AMDD"
                 :nome_modelo     "Ryzen 9 7950X"}
           _    (model/put-item! (ps/->Processadores) novo)
-          achou (model/get-item (ps/->Processadores) :nome_fabricante "AMDD")]
+          achou (model/get-item (ps/->Processadores) {:nome_fabricante "AMDD"})]
       (is (some? achou))))
 
   ;; 4) update-item!
@@ -35,13 +35,13 @@
     (let [pid (uuid-from-string "672d0b70-41da-4aa6-abc7-56f670c7c564")]
       (model/update-item! (ps/->Processadores) {:id_processador pid} {:nome_modelo "Core i9 12900K"})
       (is (= "Core i9 12900K"
-             (:nome_modelo (model/get-item (ps/->Processadores) :id_processador pid))))))
+             (:nome_modelo (model/get-item (ps/->Processadores) {:id_processador pid}))))))
 
   ;; 5) delete-item!
   (testing "delete-item!"
     (let [pid (uuid-from-string "672d0b70-41da-4aa6-abc7-56f670c7c564")]
       (model/delete-item! (ps/->Processadores) pid)
-      (is (nil? (model/get-item (ps/->Processadores) :id_processador pid)))))
+      (is (nil? (model/get-item (ps/->Processadores) {:id_processador pid})))))
 
   ;; 6) items-count
   (testing "items-count"

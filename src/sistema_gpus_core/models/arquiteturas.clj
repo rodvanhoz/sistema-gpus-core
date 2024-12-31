@@ -32,8 +32,9 @@
   (read-all [this]
     (db/select (model-name this)))
 
-  (get-item [this k v]
-    (db/select-one (model-name this) k v))
+  (get-item [this kvs]
+    (let [fn-select (partial db/select-one (model-name this))]
+      (apply fn-select (->> kvs (seq) (flatten)))))
 
   (put-item! [this entity]
     (db/insert! (model-name this) (transform this entity)))
