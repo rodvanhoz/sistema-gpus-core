@@ -4,6 +4,7 @@
    [sistema-gpus-core.models.gpus :as gpus-model]
    [sistema-gpus-core.domain.model :refer :all]
    [sistema-gpus-core.helper.utils :refer [uuid-from-string str->date date->str]]
+   [sistema-gpus-core.logic.gpus :as logic]
    [clojure.tools.logging :as log]))
 
 ;; record que implementa ControllerClientProtocol
@@ -29,25 +30,22 @@
   ;; get-item
   ;; (clause ex.: {:id_gpu "669e6eb0-..."} )
   ;; -------------------------
-  (get-item [_ clause]
-    (let [[k v] (first clause)  ;; extrai a única key e val do map
-          ;; converter v para uuid se for :id_gpu, :id_processador_grafico etc.
-          v*  (case k
-                :id_gpu                  (uuid-from-string v)
-                :id_processador_grafico  (uuid-from-string v)
-                :id_caracteristicas_graficas (uuid-from-string v)
-                :id_render_config        (uuid-from-string v)
-                :nome_modelo             v  ;; se for string normal
-                v)]  ;; fallback
-      (log/info (format "Gpu found with clause: %s" clause))
-      (if-let [found (get-item (gpus-model/->GPUs) k v*)]
+  (get-item
+    [_ clause]
+    (log/info (format "Gpu found with clause: %s" clause))
+    (let [clause* (reduce-kv
+                   (fn [acc k v]
+                     (assoc acc k (logic/->uuid-if-id k v)))
+                   {}
+                   clause)
+          found   (get-item (gpus-model/->GPUs) clause*)]
+      (when found
         (-> found
             (update :id_gpu str)
             (update :id_processador_grafico str)
             (update :id_caracteristicas_graficas str)
             (update :id_render_config str)
-            (update :dt_lancto date->str))
-        nil)))
+            (update :dt_lancto date->str)))))
 
   ;; -------------------------
   ;; put-item
