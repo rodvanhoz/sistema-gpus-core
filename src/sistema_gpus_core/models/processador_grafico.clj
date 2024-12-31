@@ -32,6 +32,7 @@
   (get-item [this kvs]
     (let [fn-select (partial db/select-one (model-name this))]
       (apply fn-select (->> kvs (seq) (flatten)))))
+
   (put-item! [this entity]
     (db/insert! (model-name this) (transform this entity)))
 
