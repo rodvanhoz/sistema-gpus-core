@@ -7,6 +7,8 @@
    [sistema-gpus-core.logic.arquitetura-processador :as logic]
    [clojure.tools.logging :as log]))
 
+(def model (model/->ArquiteturaProcessador))
+
 ;; record que implementa ControllerClientProtocol
 (defrecord ArquiteruraProcessadorController []
   ControllerClientProtocol
@@ -15,10 +17,10 @@
   ;; read-all
   ;; -------------------------
   (read-all [_]
-    (let [raw-items (read-all (model/->ArquiteturaProcessador))]
+    (let [raw-items (read-all model)]
       (log/info "Reading all arquitetura-processadores's")
       (map (fn [item]
-             (logic/uuid->str item))
+             (logic/object->string-fields item))
            raw-items)))
 
   ;; -------------------------
@@ -30,21 +32,21 @@
     (log/info (format "Arquitetura-Processador found with clause: %s" clause))
     (let [clause* (reduce-kv
                    (fn [acc k v]
-                     (assoc acc k (logic/->uuid-if-id k v)))
+                     (assoc acc k (logic/->coerce-object-field k v)))
                    {}
                    clause)
-          found   (get-item (model/->ArquiteturaProcessador) clause*)]
+          found   (get-item model clause*)]
       (when found
-        (logic/uuid->str found))))
+        (logic/object->string-fields found))))
 
   ;; -------------------------
   ;; put-item
   ;; (inserir, convertendo string->uuid / string->date)
   ;; -------------------------
   (put-item [_ entity]
-    (let [entity* (logic/build-entity entity)]
+    (let [entity* (logic/prepare entity)]
       (log/info (format "Putting arquitetura-processador: %s" entity*))
-      (put-item! (model/->ArquiteturaProcessador) entity*)
+      (put-item! model entity*)
       :ok))
 
   ;; -------------------------
@@ -53,10 +55,10 @@
   ;;  - clause: map com key e valor do where
   ;; -------------------------
   (update-item [_ updates clause]
-    (let [updates*  (logic/string->uuid updates)
-          clause* (logic/string->uuid clause)]
+    (let [updates*  (logic/string-fields->object updates)
+          clause* (logic/string-fields->object clause)]
       (log/info (format "Updating arquitetura-processador [clause: %s] with infos: %s" clause* updates*))
-      (update-item! (model/->ArquiteturaProcessador) clause* updates*)
+      (update-item! model clause* updates*)
       :ok))
 
   ;; -------------------------
@@ -65,14 +67,14 @@
   ;; -------------------------
   (delete-item [_ id]
     (let [uuid-id (uuid-from-string id)]
-      (delete-item! (model/->ArquiteturaProcessador) uuid-id)
+      (delete-item! model uuid-id)
       :ok))
 
   ;; -------------------------
   ;; items-count
   ;; -------------------------
   (items-count [_]
-    (items-count (model/->ArquiteturaProcessador))))
+    (items-count model)))
 
 ;; construtor
 (defn ->arquitetura-processador-controller []

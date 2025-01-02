@@ -2,7 +2,7 @@
   (:require
    [sistema-gpus-core.helper.utils :refer [uuid-from-string]]))
 
-(defn ->uuid-if-id
+(defn ->coerce-object-field
   "Se a chave k for algum campo de ID, converte v de string -> UUID.
      Caso contrário, retorna v inalterado."
   [k v]
@@ -13,21 +13,21 @@
       ;; fallback - não converte
     v))
 
-(defn uuid->str
+(defn object->string-fields
   [item]
   (-> item
       (update :id_arquitetura_proc str)
       (update :id_arquitetura str)
       (update :id_processador str)))
 
-(defn string->uuid
+(defn string-fields->object
   [item]
   (-> item
       (cond-> (:id_arquitetura_proc item) (update :id_arquitetura_proc #(when % (uuid-from-string %))))
       (cond-> (:id_arquitetura item) (update :id_arquitetura #(when % (uuid-from-string %))))
       (cond-> (:id_processador item) (update :id_processador #(when % (uuid-from-string %))))))
 
-(defn build-entity
+(defn prepare
   [entity]
   (-> entity
       (update :id_arquitetura #(when % (uuid-from-string %)))
