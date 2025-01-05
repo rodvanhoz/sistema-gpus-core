@@ -12,7 +12,7 @@
 
   (stop [this]
     (log/info "Stoping PostgresStorage...")
-    (db/clear-default-db-connection!)
+    ;; (db/db-connection!)
     (assoc this :connected false)))
 
 (defn new-postgres-storage
