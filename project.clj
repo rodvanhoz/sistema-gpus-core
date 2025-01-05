@@ -25,6 +25,7 @@
                  [org.clojure/java.jdbc "0.7.10"]
                  [com.mchange/c3p0 "0.9.5.2"]
                  [environ "1.2.0"]
+                 [http-kit/http-kit "2.8.0"]
                  ;; ----------------------------
                  ;; Dependências do Testcontainers
                  ;; ----------------------------
@@ -36,9 +37,6 @@
 
   :plugins [[lein-ring "0.12.5"]
             [lein-cljfmt "0.8.0"]]
-
-  :ring {:handler sistema-gpus-core.handler/app
-         :port    8000}
 
   :aliases {"lint/format" ["cljfmt" "fix"]
             "lint/check"  ["cljfmt" "check"]})
