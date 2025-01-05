@@ -15,6 +15,7 @@
                  [ring-cors "0.1.13"]
                  [toucan "1.15.1"]
                  [ring-logger "1.0.1"]
+                 [ring/ring-mock "0.3.2"]
                  [ch.qos.logback/logback-classic "1.2.11"]
                  [org.clojure/tools.logging "1.2.4"]
                  [org.slf4j/slf4j-api "1.7.26"]

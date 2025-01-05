@@ -4,7 +4,7 @@
    [toucan.db :as db]
    [sistema-gpus-core.db-setup :as db-setup]
    [sistema-gpus-core.controller.configuracoes-jogos :as ctrl]
-   [sistema-gpus-core.domain.client :refer :all]))
+   [sistema-gpus-core.domain.controller-client :refer :all]))
 
 (use-fixtures :once db-setup/with-postgres-testcontainer)
 
@@ -42,8 +42,7 @@
 ;; 4) update-item
     (testing "update-item"
       (let [id  "5a9ece7c-68fe-499a-9039-b8897af1cad6"
-            updates {:id_configuracao_jogo id
-                     :id_jogo "b17fda4d-b019-4a12-9825-f53d219fbad6"}]
+            updates {:id_jogo "b17fda4d-b019-4a12-9825-f53d219fbad6"}]
         (update-item controller updates {:id_configuracao_jogo id})
         (let [updated (get-item controller {:id_configuracao_jogo id})]
           (is (some? updated))

@@ -15,20 +15,20 @@
 
 (defn object->string-fields
   [item]
-  (-> item
+  (-> (into {} item)
       (update :id_arquitetura_proc str)
       (update :id_arquitetura str)
       (update :id_processador str)))
 
 (defn string-fields->object
   [item]
-  (-> item
+  (-> (into {} item)
       (cond-> (:id_arquitetura_proc item) (update :id_arquitetura_proc #(when % (uuid-from-string %))))
       (cond-> (:id_arquitetura item) (update :id_arquitetura #(when % (uuid-from-string %))))
       (cond-> (:id_processador item) (update :id_processador #(when % (uuid-from-string %))))))
 
 (defn prepare
   [entity]
-  (-> entity
+  (-> (into {} entity)
       (update :id_arquitetura #(when % (uuid-from-string %)))
       (update :id_processador #(when % (uuid-from-string %)))))

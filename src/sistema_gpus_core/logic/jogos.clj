@@ -14,17 +14,17 @@
 
 (defn object->string-fields
   [item]
-  (-> item
+  (-> (into {} item)
       (update :id_jogo str)
       (update :dt_lancto date->str)))
 
 (defn string-fields->object
   [item]
-  (-> item
+  (-> (into {} item)
       (cond-> (:id_jogo item) (update :id_jogo #(when % (uuid-from-string %))))
       (cond-> (:dt_lancto item) (update :dt_lancto #(when % (str->date %))))))
 
 (defn prepare
   [entity]
-  (-> entity
+  (-> (into {} entity)
       (update :dt_lancto #(when % (str->date %)))))
