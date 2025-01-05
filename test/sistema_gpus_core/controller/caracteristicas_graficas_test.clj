@@ -4,7 +4,7 @@
    [toucan.db :as db]
    [sistema-gpus-core.db-setup :as db-setup]
    [sistema-gpus-core.controller.caracteristicas-graficas :as ctrl]
-   [sistema-gpus-core.domain.client :refer :all]))
+   [sistema-gpus-core.domain.controller-client :refer :all]))
 
 (use-fixtures :once db-setup/with-postgres-testcontainer)
 

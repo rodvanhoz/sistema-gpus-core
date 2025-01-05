@@ -1,6 +1,6 @@
 (ns sistema-gpus-core.controller.processador-grafico
   (:require
-   [sistema-gpus-core.domain.client :refer [ControllerClientProtocol]]
+   [sistema-gpus-core.domain.controller-client :refer [ControllerClientProtocol]]
    [sistema-gpus-core.models.processador-grafico :as model]
    [sistema-gpus-core.domain.model :refer :all]
    [sistema-gpus-core.helper.utils :refer [uuid-from-string]]
