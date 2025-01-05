@@ -19,7 +19,7 @@
 
 (defn object->string-fields
   [item]
-  (-> item
+  (-> (into {} item)
       (update :id_teste_gpu str)
       (update :id_configuracao_jogo str)
       (update :id_gpu str)
@@ -30,7 +30,7 @@
 
 (defn string-fields->object
   [item]
-  (-> item
+  (-> (into {} item)
       (cond-> (:id_teste_gpu item) (update :id_teste_gpu #(when % (uuid-from-string %))))
       (cond-> (:id_configuracao_jogo item) (update :id_configuracao_jogo #(when % (uuid-from-string %))))
       (cond-> (:id_gpu item) (update :id_gpu #(when % (uuid-from-string %))))
@@ -41,7 +41,7 @@
 
 (defn prepare
   [entity]
-  (-> entity
+  (-> (into {} entity)
       (update :id_configuracao_jogo #(when % (uuid-from-string %)))
       (update :id_gpu #(when % (uuid-from-string %)))
       (update :id_processador #(when % (uuid-from-string %)))

@@ -15,20 +15,20 @@
 
 (defn object->string-fields
   [item]
-  (-> item
+  (-> (into {} item)
       (update :id_configuracao_jogo str)
       (update :id_jogo str)
       (update :id_configuracao str)))
 
 (defn string-fields->object
   [item]
-  (-> item
+  (-> (into {} item)
       (cond-> (:id_configuracao_jogo item) (update :id_configuracao_jogo #(when % (uuid-from-string %))))
       (cond-> (:id_jogo item) (update :id_jogo #(when % (uuid-from-string %))))
       (cond-> (:id_configuracao item) (update :id_configuracao #(when % (uuid-from-string %))))))
 
 (defn prepare
   [entity]
-  (-> entity
+  (-> (into {} entity)
       (update :id_jogo #(when % (uuid-from-string %)))
       (update :id_configuracao #(when % (uuid-from-string %)))))

@@ -13,14 +13,14 @@
 
 (defn object->string-fields
   [item]
-  (-> item
+  (-> (into {} item)
       (update :id_proc_grafico str)))
 
 (defn string-fields->object
   [item]
-  (-> item
+  (-> (into {} item)
       (cond-> (:id_proc_grafico item) (update :id_proc_grafico #(when % (uuid-from-string %))))))
 
 (defn prepare
   [entity]
-  (-> entity))
+  (-> (into {} entity)))

@@ -21,7 +21,7 @@
 
 (defn object->string-fields
   [item]
-  (-> item
+  (-> (into {} item)
       (update :id_render_config str)
       (update :shading_units str)
       (update :tmus str)
@@ -34,7 +34,7 @@
 
 (defn string-fields->object
   [item]
-  (-> item
+  (-> (into {} item)
       (cond-> (:id_render_config item) (update :id_render_config #(when % (uuid-from-string %))))
       (cond-> (:shading_units item) (update :shading_units #(when % (Integer/parseInt %))))
       (cond-> (:tmus item) (update :tmus #(when % (Integer/parseInt %))))
@@ -47,7 +47,7 @@
 
 (defn prepare
   [entity]
-  (-> entity
+  (-> (into {} entity)
       (update :shading_units #(when % (Integer/parseInt %)))
       (update :tmus #(when % (Integer/parseInt %)))
       (update :rops #(when % (Integer/parseInt %)))
