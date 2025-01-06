@@ -1,4 +1,5 @@
-(ns sistema-gpus-core.core
+(ns main.core
+  (:gen-class)
   (:require [com.stuartsierra.component :as component]
             [sistema-gpus-core.system :refer [create-system]]
             [org.httpkit.server :as httpkit]
