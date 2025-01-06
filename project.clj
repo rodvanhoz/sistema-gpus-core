@@ -32,8 +32,16 @@
                  [org.testcontainers/testcontainers "1.19.0"]
                  [org.testcontainers/postgresql "1.19.0"]
                  ;; Caso queira wrapper em Clojure para Testcontainers
-                 [clj-test-containers "0.7.4"] 
+                 [clj-test-containers "0.7.4"]
                  [com.stuartsierra/component "1.1.0"]]
+
+  :profiles {:uberjar {:jar-name "sistema-gpus-core-single.jar"
+                       :aot          [main.core]
+                       :uberjar-name "sistema-gpus-core.jar"}}
+
+  :ring {:init   main.core/-main
+         :handler sistema-gpus-core.handler/app
+         :port    8000}
 
   :plugins [[lein-ring "0.12.5"]
             [lein-cljfmt "0.8.0"]]
