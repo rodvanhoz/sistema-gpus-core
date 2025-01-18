@@ -32,7 +32,8 @@
     (log/info (format "caracteristicas-graficas found with clause: %s" clause))
     (let [clause* (reduce-kv
                    (fn [acc k v]
-                     (assoc acc k (logic/->coerce-object-field k v)))
+                     (let [[k2 v2] (logic/->coerce-object-field k v)]
+                       (assoc acc k2 v2)))
                    {}
                    clause)
           found   (get-item model clause*)]

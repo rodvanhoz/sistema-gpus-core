@@ -32,7 +32,8 @@
     (log/info (format "testes-gpu found with clause: %s" clause))
     (let [clause* (reduce-kv
                    (fn [acc k v]
-                     (assoc acc k (logic/->coerce-object-field k v)))
+                     (let [[k2 v2] (logic/->coerce-object-field k v)]
+                       (assoc acc k2 v2)))
                    {}
                    clause)
           found   (get-item model clause*)]
@@ -75,6 +76,33 @@
                     ;; -------------------------
   (items-count [_]
     (items-count model)))
+
+(defn melhores-dados-testes
+  "Agrupa por [:id_gpu :id_jogo :id_configuracao_jogo] e pega valores máximos de avg_fps e min_fps."
+  []
+  (let [rows (model/melhores-dados-testes)
+        agrupado (group-by
+                  (fn [row]
+                     ;; chave de agrupamento: GPU + Jogo + Config
+                    [(:id_gpu row)
+                     (:id_jogo row)
+                     (:id_configuracao_jogo row)])
+                  rows)
+        raw-items (mapv
+                   (fn [[_ grupo]]
+                       ;; Reduzimos dentro do grupo para achar o "melhor" fps
+                     (reduce
+                      (fn [acc item]
+                        (-> acc
+                            (update :avg_fps #(max (or % 0) (:avg_fps item)))
+                            (update :min_fps #(max (or % 0) (:min_fps item)))))
+                      (first grupo)  ;; comece com o primeiro do grupo
+                      grupo))
+                   agrupado)]
+
+    (map (fn [item]
+           (logic/object->string-fields item))
+         raw-items)))
 
                   ;; construtor
 (defn ->testes-gpu-controller []

@@ -1,6 +1,7 @@
 (ns sistema-gpus-core.models.processadores
   (:require [toucan.models :as models]
             [sistema-gpus-core.domain.model :refer [ModelProtocol transform model-name]]
+            [sistema-gpus-core.helper.utils :refer [build-where-clause]]
             [toucan.db :as db]))
 
 (models/defmodel Processadores :processadores)
@@ -36,12 +37,49 @@
     entity)
 
   ;; CRUD
-  (read-all [this]
-    (db/select (model-name this)))
+  (read-all
+    [this]
+    (db/query
+     {:select [[:p.id_processador :id_processador]
+               [:p.nome_fabricante :nome_fabricante]
+               [:p.nome_modelo :nome_modelo]
+               [:p.nro_cores :nro_cores]
+               [:p.nro_threads :nro_threads]
+               [:p.tdp :tdp]
+               [:p.frequencia :frequencia]
+               [:p.turbofrequencia :turbofrequencia]
+               [:p.codename :codename]
+               [:dp.socket :socket]
+               [:g.nome_modelo :grafico_integrado]
+               [:dp.id_dados_processador :id_dados_processador]
+               [:g.id_gpu :id_gpu]]
+      :from   [[:processadores :p]]
+      :join   [[:dados_processador :dp] [:= :p.id_dados_processador :dp.id_dados_processador]]
+      :left-join [[:gpus :g] [:= :p.id_gpu :g.id_gpu]]}))
 
-  (get-item [this kvs]
-    (let [fn-select (partial db/select-one (model-name this))]
-      (apply fn-select (->> kvs (seq) (flatten)))))
+  (get-item
+    [this kvs]
+    (-> (db/query
+         (merge
+          {:select [[:p.id_processador :id_processador]
+                    [:p.nome_fabricante :nome_fabricante]
+                    [:p.nome_modelo :nome_modelo]
+                    [:p.nro_cores :nro_cores]
+                    [:p.nro_threads :nro_threads]
+                    [:p.tdp :tdp]
+                    [:p.frequencia :frequencia]
+                    [:p.turbofrequencia :turbofrequencia]
+                    [:p.codename :codename]
+                    [:dp.socket :socket]
+                    [:g.nome_modelo :grafico_integrado]
+                    [:dp.id_dados_processador :id_dados_processador]
+                    [:g.id_gpu :id_gpu]]
+           :from   [[:processadores :p]]
+           :join   [[:dados_processador :dp] [:= :p.id_dados_processador :dp.id_dados_processador]]
+           :left-join [[:gpus :g] [:= :p.id_gpu :g.id_gpu]]
+           :limit  1}
+          {:where (build-where-clause kvs)}))
+        (first)))
 
   (put-item! [this entity]
     (db/insert! (model-name this) (transform this entity)))

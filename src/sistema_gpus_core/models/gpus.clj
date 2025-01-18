@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as str]
    [sistema-gpus-core.domain.model :refer [ModelProtocol transform model-name]]
+   [sistema-gpus-core.helper.utils :refer [build-where-clause]]
    [toucan.db :as db]
    [toucan.models :as models]))
 
@@ -45,12 +46,69 @@
 
   ;; --- CRUD ---
 
-  (read-all [this]
-    (db/select (model-name this)))
+  (read-all
+    [this]
+    (db/query
+     {:select [[:g.id_gpu :id_gpu]
+               [:g.nome_fabricante :nome_fabricante]
+               [:g.nome_modelo :nome_modelo]
+               [:pg.nome_gpu :nome_gpu]
+               [:pg.arquitetura :arquitetura]
+               [:rc.shading_units :shading_units]
+               [:rc.rops :rops]
+               [:rc.tmus :tmus]
+               [:g.tam_memoria_kb :tam_memoria_kb]
+               [:g.tp_memoria :tp_memoria]
+               [:g.gpu_clock :gpu_clock]
+               [:g.boost_clock :boost_clock]
+               [:cg.direct_x :direct_x]
+               [:cg.open_gl :open_gl]
+               [:cg.open_cl :open_cl]
+               [:cg.vulkan :vulkan]
+               [:g.mem_clock :mem_clock]
+               [:g.mem_clock_efetivo :mem_clock_efetivo]
+               [:g.tam_banda :tam_banda]
+               [:g.tdp :tdp]
+               [:g.bus_interface :bus_interface]
+               [:g.dt_lancto :dt_lancto]]
+      :from   [[:gpus :g]]
+      :join   [[:processador_grafico      :pg] [:= :g.id_processador_grafico       :pg.id_proc_grafico]
+               [:caracteristicas_graficas :cg] [:= :g.id_caracteristicas_graficas   :cg.id_carac_grafica]
+               [:render_config            :rc] [:= :g.id_render_config              :rc.id_render_config]]}))
 
-  (get-item [this kvs]
-    (let [fn-select (partial db/select-one (model-name this))]
-      (apply fn-select (->> kvs (seq) (flatten)))))
+  (get-item
+    [this kvs]
+    (-> (db/query
+         (merge
+          {:select [[:g.id_gpu :id_gpu]
+                    [:g.nome_fabricante :nome_fabricante]
+                    [:g.nome_modelo :nome_modelo]
+                    [:pg.nome_gpu :nome_gpu]
+                    [:pg.arquitetura :arquitetura]
+                    [:rc.shading_units :shading_units]
+                    [:rc.rops :rops]
+                    [:rc.tmus :tmus]
+                    [:g.tam_memoria_kb :tam_memoria_kb]
+                    [:g.tp_memoria :tp_memoria]
+                    [:g.gpu_clock :gpu_clock]
+                    [:g.boost_clock :boost_clock]
+                    [:cg.direct_x :direct_x]
+                    [:cg.open_gl :open_gl]
+                    [:cg.open_cl :open_cl]
+                    [:cg.vulkan :vulkan]
+                    [:g.mem_clock :mem_clock]
+                    [:g.mem_clock_efetivo :mem_clock_efetivo]
+                    [:g.tam_banda :tam_banda]
+                    [:g.tdp :tdp]
+                    [:g.bus_interface :bus_interface]
+                    [:g.dt_lancto :dt_lancto]]
+           :from   [[:gpus :g]]
+           :join   [[:processador_grafico      :pg] [:= :g.id_processador_grafico       :pg.id_proc_grafico]
+                    [:caracteristicas_graficas :cg] [:= :g.id_caracteristicas_graficas   :cg.id_carac_grafica]
+                    [:render_config            :rc] [:= :g.id_render_config              :rc.id_render_config]]
+           :limit  1}
+          {:where (build-where-clause kvs)}))
+        (first)))
 
   (put-item! [this entity]
     (db/insert! (model-name this) (transform this entity)))

@@ -1,6 +1,7 @@
 (ns sistema-gpus-core.models.configuracoes-jogos
   (:require [toucan.models :as models]
             [sistema-gpus-core.domain.model :refer [ModelProtocol transform model-name]]
+            [sistema-gpus-core.helper.utils :refer [build-where-clause]]
             [toucan.db :as db]))
 
 (models/defmodel ConfiguracaoJogo :configuracoes_jogos)
@@ -20,12 +21,53 @@
     entity)
 
   ;; CRUD
-  (read-all [this]
-    (db/select (model-name this)))
+  (read-all
+    [this]
+    (db/query
+     {:select [[:b.nome_jogo :nome_jogo]
+               [:b.dt_lancto :dt_lancto]
+               [:c.resolucao_abrev :resolucao_abrev]
+               [:c.resolucao_detalhe :resolucao_detalhe]
+               [:c.api :api]
+               [:c.qualidade_grafica :qualidade_grafica]
+               [:c.ssao :ssao]
+               [:c.fxaa :fxaa]
+               [:c.taa :taa]
+               [:c.rt :rt]
+               [:c.aa :aa]
+               [:c.nvidia_tec :nvidia_tec]
+               [:b.id_jogo :id_jogo]
+               [:c.id_configuracao :id_configuracao]
+               [:a.id_configuracao_jogo :id_configuracao_jogo]]
+      :from   [[:configuracoes_jogos :a]]
+      :join   [[:jogos         :b] [:= :a.id_jogo        :b.id_jogo]
+               [:configuracoes :c] [:= :a.id_configuracao :c.id_configuracao]]}))
 
-  (get-item [this kvs]
-    (let [fn-select (partial db/select-one (model-name this))]
-      (apply fn-select (->> kvs (seq) (flatten)))))
+  (get-item
+    [this kvs]
+    (-> (db/query
+         (merge
+          {:select [[:b.nome_jogo :nome_jogo]
+                    [:b.dt_lancto :dt_lancto]
+                    [:c.resolucao_abrev :resolucao_abrev]
+                    [:c.resolucao_detalhe :resolucao_detalhe]
+                    [:c.api :api]
+                    [:c.qualidade_grafica :qualidade_grafica]
+                    [:c.ssao :ssao]
+                    [:c.fxaa :fxaa]
+                    [:c.taa :taa]
+                    [:c.rt :rt]
+                    [:c.aa :aa]
+                    [:c.nvidia_tec :nvidia_tec]
+                    [:b.id_jogo :id_jogo]
+                    [:c.id_configuracao :id_configuracao]
+                    [:a.id_configuracao_jogo :id_configuracao_jogo]]
+           :from   [[:configuracoes_jogos :a]]
+           :join   [[:jogos         :b] [:= :a.id_jogo        :b.id_jogo]
+                    [:configuracoes :c] [:= :a.id_configuracao :c.id_configuracao]]
+           :limit  1}
+          {:where (build-where-clause kvs)}))
+        (first)))
 
   (put-item! [this entity]
     (db/insert! (model-name this) (transform this entity)))
