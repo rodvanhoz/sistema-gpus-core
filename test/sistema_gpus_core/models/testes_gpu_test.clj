@@ -6,7 +6,7 @@
             [sistema-gpus-core.models.testes-gpu :as tg]
             [sistema-gpus-core.helper.utils :refer [uuid-from-string]]))
 
-(use-fixtures :once db-setup/with-postgres-testcontainer)
+(use-fixtures :each db-setup/with-postgres-testcontainer)
 
 (deftest test-testes-gpu-crud
   (db-setup/apply-mock-testes-gpu! (db/connection))
@@ -26,6 +26,7 @@
   (testing "put-item!"
     (let [novo {:nome_driver_gpu "Nvidia Nova 536.23"
                 :avg_fps 150
+                :id_configuracao_jogo (uuid-from-string "5d2548f0-819f-4774-85ea-79d65f33bc3f")
                 :id_gpu (uuid-from-string "a41adbc8-acf0-432e-bd13-a2eb7d66b034")
                 :id_processador (uuid-from-string "f9ce2969-a573-4e8b-b71c-abc263bcb4a5")}
           _    (model/put-item! (tg/->TestesGPU) novo)
@@ -48,3 +49,21 @@
   (testing "items-count"
     (let [cnt (model/items-count (tg/->TestesGPU))]
       (is (pos? cnt)))))
+
+(deftest test-melhores-dados-testes-model
+  (db-setup/apply-mock-testes-gpu! (db/connection))
+
+  (testing "Verificando se a função do model retorna o join bruto (sem group-by)"
+    (let [rows (tg/melhores-dados-testes)]
+      (is (seq rows) "A consulta não deve retornar vazio, pois o mock insere 1 registro em testes_gpu")
+      (is (map? (first rows)) "Cada linha deve ser um map com as chaves definidas em :select")
+
+      (let [row (first rows)]
+        (is (contains? row :nome_modelo_gpu))
+        (is (contains? row :avg_fps))
+        (is (contains? row :min_fps))
+
+        ;; Com base no mock:
+        ;;   avg_fps = 50, min_fps = 39
+        (is (= 50 (:avg_fps row)) "FPS médio esperado do mock")
+        (is (= 39 (:min_fps row)) "FPS mínimo esperado do mock")))))

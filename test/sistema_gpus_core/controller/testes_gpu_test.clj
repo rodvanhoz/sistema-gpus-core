@@ -6,7 +6,7 @@
    [sistema-gpus-core.controller.testes-gpu :as ctrl]
    [sistema-gpus-core.domain.controller-client :refer :all]))
 
-(use-fixtures :once db-setup/with-postgres-testcontainer)
+(use-fixtures :each db-setup/with-postgres-testcontainer)
 
 (deftest controller-crud-test
                     ;; Carrega mocks da tabela
@@ -31,6 +31,7 @@
     (testing "put-item"
       (let [new-entity {:nome_driver_gpu "Nvidia Nova 536.23"
                         :avg_fps "150"
+                        :id_configuracao_jogo "5d2548f0-819f-4774-85ea-79d65f33bc3f"
                         :id_gpu "a41adbc8-acf0-432e-bd13-a2eb7d66b034"
                         :id_processador "f9ce2969-a573-4e8b-b71c-abc263bcb4a5"}]
         (put-item controller new-entity)
@@ -65,3 +66,20 @@
     (testing "items-count"
       (let [cnt (items-count controller)]
         (is (pos? cnt) "items-count deve ser positivo")))))
+
+(deftest test-melhores-dados-testes-controller
+  (db-setup/apply-mock-testes-gpu! (db/connection))
+
+  (testing "Agrupando e pegando os melhores FPS via Clojure"
+    (let [resultados (ctrl/melhores-dados-testes)]
+      (is (seq resultados) "Não deve ser vazio, pois há pelo menos 1 registro no mock.")
+
+      ;; Como o mock possui apenas 1 registro em testes_gpu, deve haver 1 grupo só.
+      (is (= 1 (count resultados)) "Apenas 1 agrupamento esperado com 1 registro no DB")
+
+      (let [res (first resultados)]
+        ;; Verificamos se manteve as chaves do 'primeiro item'
+        (is (= "50" (:avg_fps res)) "Deve ser o mesmo FPS do mock")
+        (is (= "39" (:min_fps res)) "Deve ser o mesmo min_fps do mock")
+        (is (= "GIGABYTE AORUS RX 570" (:nome_modelo_gpu res)))
+        (is (= "Core i5-8400" (:nome_modelo_processador res)))))))

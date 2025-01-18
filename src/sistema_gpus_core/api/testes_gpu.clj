@@ -64,6 +64,17 @@
       (log/error (.getMessage e))
       (bad-request (.getMessage e)))))
 
+;; FUNÇÃO GET /api/testes-gpu/melhores-dados
+(defn melhores-dados [_]
+  (try
+    (let [result (ctrl/melhores-dados-testes)]
+      (if (empty? result)
+        (no-content)
+        (ok result)))
+    (catch Exception e
+      (log/error (.getMessage e))
+      (bad-request (.getMessage e)))))
+
 ;; Definição das rotas específicas desta API
 (defroutes testes-gpu-routes
   (context "/api" []
@@ -72,4 +83,6 @@
       (GET "/:id" [id] get-by-id)
       (POST "/" [] post-item)
       (PUT "/:id" [id] put-item)
-      (DELETE "/:id" [id] delete-item))))
+      (DELETE "/:id" [id] delete-item))
+    (context "/melhores-dados" []
+      (GET "/" [] melhores-dados))))

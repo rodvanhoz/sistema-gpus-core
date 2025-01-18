@@ -30,7 +30,8 @@
                   ;; 3) put-item
     (testing "put-item"
       (let [new-entity {:nome_fabricante "AMDD"
-                        :nome_modelo     "Ryzen 9 7950X"}]
+                        :nome_modelo     "Ryzen 9 7950X"
+                        :id_dados_processador "f8860454-8867-4115-a836-a937bf018693"}]
         (put-item controller new-entity)
                       ;; checar se foi inserido
         (let [found (get-item controller {:nome_fabricante "AMDD"

@@ -25,9 +25,10 @@
   ;; 3) put-item!
   (testing "put-item!"
     (let [novo {:nome_fabricante "AMDD"
-                :nome_modelo     "Ryzen 9 7950X"}
+                :nome_modelo     "Ryzen 9 7950X"
+                :id_dados_processador (uuid-from-string "f8860454-8867-4115-a836-a937bf018693")}
           _    (model/put-item! (ps/->Processadores) novo)
-          achou (model/get-item (ps/->Processadores) {:nome_fabricante "AMDD"})]
+          achou (model/get-item (ps/->Processadores) {:p.nome_fabricante "AMDD"})]
       (is (some? achou))))
 
   ;; 4) update-item!

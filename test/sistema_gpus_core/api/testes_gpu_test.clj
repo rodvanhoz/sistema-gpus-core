@@ -7,7 +7,7 @@
    [sistema-gpus-core.db-setup :as db-setup]
    [sistema-gpus-core.handler :refer [app]]))
 
-(use-fixtures :once db-setup/with-postgres-testcontainer)
+(use-fixtures :each db-setup/with-postgres-testcontainer)
 
 (deftest testes-gpu-api-crud-test
     ;; Carrega mocks na tabela
@@ -17,8 +17,7 @@
     (let [response (app (mock/request :get "/api/testes-gpu"))
           body     (json/parse-string (:body response) true)]
       (is (= 200 (:status response)))
-      (is (pos? (count body)))    ;; Deve ter itens inseridos pelo mock
-      ))
+      (is (pos? (count body)))))
 
   (testing "GET /api/testes-gpu/:id -> deve retornar por ID"
     (let [id "24aa2801-e697-412b-b4cb-a830683f47fa"
@@ -47,3 +46,15 @@
     (let [id "24aa2801-e697-412b-b4cb-a830683f47fa"
           response (app (mock/request :delete (str "/api/testes-gpu/" id)))]
       (is (= 200 (:status response))))))
+
+(deftest melhores-dados-test
+  (db-setup/apply-mock-testes-gpu! (db/connection))
+  (testing "GET /api/testes-gpu/melhores-dados -> verifica se retorna resultado"
+    (let [response (app (mock/request :get "/api/melhores-dados"))
+          body     (json/parse-string (:body response) true)]
+      (is (or (= 200 (:status response)) (= 204 (:status response)))
+          "Deve retornar 200 OK se houver dados ou 204 No Content se não houver.")
+      (when (= 200 (:status response))
+                ;; Se for 200, esperamos que haja conteúdo
+        (is (seq body) "O corpo deve conter alguma lista de resultados.")))))
+

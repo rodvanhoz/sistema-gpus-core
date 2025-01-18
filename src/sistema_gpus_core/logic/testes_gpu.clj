@@ -4,18 +4,33 @@
 
 (defn ->coerce-object-field
   "Se a chave k for algum campo de ID, converte v de string -> UUID.
-                   Caso contrário, retorna v inalterado."
+   e retorna um par [nova-chave valor].
+   Caso contrário, retorna [k v] inalterado."
   [k v]
   (case k
-    :id_teste_gpu         (uuid-from-string v)
-    :id_configuracao_jogo (uuid-from-string v)
-    :id_gpu               (uuid-from-string v)
-    :id_processador       (uuid-from-string v)
-    :avg_fps              (Integer/parseInt v)
-    :min_fps              (Integer/parseInt v)
-    :dt_teste             (str->date v)
-                    ;; fallback - não converte
-    v))
+    :id_teste_gpu
+    [:tg.id_teste_gpu (uuid-from-string v)]
+
+    :id_configuracao_jogo
+    [:tg.id_configuracao_jogo (uuid-from-string v)]
+
+    :id_gpu
+    [:tg.id_gpu (uuid-from-string v)]
+
+    :id_processador
+    [:tg.id_processador (uuid-from-string v)]
+
+    :avg_fps
+    [:tg.avg_fps (Integer/parseInt v)]
+
+    :min_fps
+    [:tg.min_fps (Integer/parseInt v)]
+
+    :dt_teste
+    [:tg.dt_teste (str->date v)]
+
+    ;; fallback - não converte nem renomeia
+    [k v]))
 
 (defn object->string-fields
   [item]

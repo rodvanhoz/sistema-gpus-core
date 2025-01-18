@@ -27,3 +27,9 @@
   [date]
   (when date
     (str (c/from-sql-date date))))  ; c/from-sql-date retorna um DateTime do clj-time, e str converte para ISO8601
+
+(defn build-where-clause [kvs]
+  (when (seq kvs)
+    (into [:and]
+          (map (fn [[k v]] [:= k v]))
+          kvs)))
