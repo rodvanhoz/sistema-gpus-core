@@ -4,6 +4,8 @@
   :min-lein-version "2.0.0"
   :resource-paths ["config" "src/main/resources"]
   :jvm-opts ["-Duser.timezone=UTC" "-Duser.country=BR" "-Duser.language=pt"]
+  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
+            :url "https://www.eclipse.org/legal/epl-2.0/"}
 
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [compojure "1.6.1"]
@@ -26,6 +28,8 @@
                  [com.mchange/c3p0 "0.9.5.2"]
                  [environ "1.2.0"]
                  [http-kit/http-kit "2.8.0"]
+                 [buddy/buddy-sign "3.6.1-359"]
+                 [buddy/buddy-core "1.12.0-430"]
                  ;; ----------------------------
                  ;; Dependências do Testcontainers
                  ;; ----------------------------
@@ -35,7 +39,19 @@
                  [clj-test-containers "0.7.4"]
                  [com.stuartsierra/component "1.1.0"]]
 
-  :profiles {:uberjar {:jar-name "sistema-gpus-core-single.jar"
+  :profiles {:dev {:dependencies [[org.clojure/tools.namespace "1.4.4"]
+                                [eftest "0.6.0"]
+                                [ring/ring-mock "0.4.0"]]
+                  :env {:jwt-secret "dev-secret-token-2024"
+                       :jwt-expiration 3600
+                       :auth-token "dev-secret-token-2024"}}
+             :test {:env {:jwt-secret "test-secret-token-2024"
+                         :jwt-expiration 3600
+                         :auth-token "test-secret-token-2024"}}
+             :prod {:env {:jwt-secret "prod-secret-token-2024"
+                         :jwt-expiration 3600
+                         :auth-token "prod-secret-token-2024"}}
+             :uberjar {:jar-name "sistema-gpus-core-single.jar"
                        :aot          [main.core]
                        :uberjar-name "sistema-gpus-core.jar"}}
 

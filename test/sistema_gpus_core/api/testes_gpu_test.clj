@@ -5,23 +5,44 @@
    [cheshire.core :as json]
    [toucan.db :as db]
    [sistema-gpus-core.db-setup :as db-setup]
-   [sistema-gpus-core.handler :refer [app]]))
+   [sistema-gpus-core.handler :refer [app]]
+   [sistema-gpus-core.helper.test-utils :refer [with-auth-token]]
+   [sistema-gpus-core.auth :as auth]
+   [clj-time.core :as t]
+   [clj-time.coerce :as tc]))
 
-(use-fixtures :each db-setup/with-postgres-testcontainer)
+(use-fixtures :once db-setup/with-postgres-testcontainer)
+
+(deftest testes-gpu-api-auth-test
+  (testing "GET /api/testes-gpu -> deve retornar 401 sem token"
+    (let [response (app (mock/request :get "/api/testes-gpu"))
+          body     (json/parse-string (:body response) true)]
+      (is (= 401 (:status response)))
+      (is (= "No Authorization header provided" (:error body)))))
+
+  (testing "GET /api/testes-gpu -> deve retornar 401 com token expirado"
+    (let [expired-token (auth/create-token {:exp (quot (tc/to-long (t/minus (t/now) (t/hours 1))) 1000)})
+          response (app (-> (mock/request :get "/api/testes-gpu")
+                            (mock/header "Authorization" (str "Bearer " expired-token))))
+          body     (json/parse-string (:body response) true)]
+      (is (= 401 (:status response)))
+      (is (= "Invalid token" (:error body))))))
 
 (deftest testes-gpu-api-crud-test
     ;; Carrega mocks na tabela
   (db-setup/apply-mock-testes-gpu! (db/connection))
 
   (testing "GET /api/testes-gpu -> deve retornar todos"
-    (let [response (app (mock/request :get "/api/testes-gpu"))
+    (let [response (app (-> (mock/request :get "/api/testes-gpu")
+                            with-auth-token))
           body     (json/parse-string (:body response) true)]
       (is (= 200 (:status response)))
       (is (pos? (count body)))))
 
   (testing "GET /api/testes-gpu/:id -> deve retornar por ID"
     (let [id "24aa2801-e697-412b-b4cb-a830683f47fa"
-          response (app (mock/request :get (str "/api/testes-gpu/" id)))
+          response (app (-> (mock/request :get (str "/api/testes-gpu/" id))
+                            with-auth-token))
           body     (json/parse-string (:body response) true)]
       (is (= 200 (:status response)))
       (is (= id (:id_teste_gpu body)) "UUID deve ser igual")))
@@ -32,25 +53,29 @@
                       :id_gpu "a41adbc8-acf0-432e-bd13-a2eb7d66b034"
                       :id_processador "f9ce2969-a573-4e8b-b71c-abc263bcb4a5"}
           response (app (-> (mock/request :post "/api/testes-gpu")
-                            (mock/json-body new-entity)))]
+                            (mock/json-body new-entity)
+                            with-auth-token))]
       (is (= 201 (:status response)))))
 
   (testing "PUT /api/testes-gpu/:id -> deve atualizar"
     (let [id "24aa2801-e697-412b-b4cb-a830683f47fa"
           updates {:avg_fps "200"}
           response (app (-> (mock/request :put (str "/api/testes-gpu/" id))
-                            (mock/json-body updates)))]
+                            (mock/json-body updates)
+                            with-auth-token))]
       (is (= 200 (:status response)))))
 
   (testing "DELETE /api/testes-gpu/:id -> deve remover"
     (let [id "24aa2801-e697-412b-b4cb-a830683f47fa"
-          response (app (mock/request :delete (str "/api/testes-gpu/" id)))]
+          response (app (-> (mock/request :delete (str "/api/testes-gpu/" id))
+                            with-auth-token))]
       (is (= 200 (:status response))))))
 
 (deftest melhores-dados-test
   (db-setup/apply-mock-testes-gpu! (db/connection))
   (testing "GET /api/testes-gpu/melhores-dados -> verifica se retorna resultado"
-    (let [response (app (mock/request :get "/api/melhores-dados"))
+    (let [response (app (-> (mock/request :get "/api/melhores-dados")
+                            with-auth-token))
           body     (json/parse-string (:body response) true)]
       (is (or (= 200 (:status response)) (= 204 (:status response)))
           "Deve retornar 200 OK se houver dados ou 204 No Content se não houver.")
