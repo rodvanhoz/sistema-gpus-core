@@ -10,6 +10,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.multipart-params :refer [wrap-multipart-params]]
             [ring.util.http-response :refer [ok bad-request unauthorized not-found created no-content conflict]]
+            [sistema-gpus-core.auth :refer [wrap-auth]]
 
                 ;; APIs
             [sistema-gpus-core.api.gpus :refer [gpus-routes]]
@@ -73,6 +74,7 @@
       (wrap-keyword-params)
       (wrap-cors :access-control-allow-origin #"http://localhost:4200"
                  :access-control-allow-methods [:get :put :post :delete])
+      (wrap-auth)
       (wrap-json-response)
       (wrap-json-body {:keywords? true})
       (wrap-multipart-params)

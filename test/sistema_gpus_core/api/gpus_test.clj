@@ -5,17 +5,37 @@
    [cheshire.core :as json]
    [toucan.db :as db]
    [sistema-gpus-core.db-setup :as db-setup]
-   [sistema-gpus-core.handler :refer [app]]))
+   [sistema-gpus-core.handler :refer [app]]
+   [sistema-gpus-core.helper.test-utils :refer [with-auth-token]]
+   [sistema-gpus-core.auth :as auth]
+   [clj-time.core :as t]
+   [clj-time.coerce :as tc]))
 
 ;; Usa o fixture que inicia o Testcontainer e prepara o BD (se for esse seu setup)
 (use-fixtures :once db-setup/with-postgres-testcontainer)
+
+(deftest gpus-api-auth-test
+  (testing "GET /api/gpus -> deve retornar 401 sem token"
+    (let [response (app (mock/request :get "/api/gpus"))
+          body     (json/parse-string (:body response) true)]
+      (is (= 401 (:status response)))
+      (is (= "No Authorization header provided" (:error body)))))
+
+  (testing "GET /api/gpus -> deve retornar 401 com token expirado"
+    (let [expired-token (auth/create-token {:exp (quot (tc/to-long (t/minus (t/now) (t/hours 1))) 1000)})
+          response (app (-> (mock/request :get "/api/gpus")
+                            (mock/header "Authorization" (str "Bearer " expired-token))))
+          body     (json/parse-string (:body response) true)]
+      (is (= 401 (:status response)))
+      (is (= "Invalid token" (:error body))))))
 
 (deftest gpus-api-crud-test
   ;; Carrega mocks na tabela gpus
   (db-setup/apply-mock-gpus! (db/connection))
 
   (testing "GET /api/gpus -> deve retornar todos os gpus"
-    (let [response (app (mock/request :get "/api/gpus"))
+    (let [response (app (-> (mock/request :get "/api/gpus")
+                            with-auth-token))
           body    (json/parse-string (:body response) #(keyword %))]         ;; converte para map com keyword
       (is (= 200 (:status response)))
      ;; (is (list? body))               ;; ou verifique se é lista de gpus
@@ -23,7 +43,8 @@
 
   (testing "GET /api/gpus/:id -> deve retornar gpu por ID"
     (let [id       "669e6eb0-6528-489a-ac90-bb3670cb6a78"
-          response (app (mock/request :get (str "/api/gpus/" id)))
+          response (app (-> (mock/request :get (str "/api/gpus/" id))
+                            with-auth-token))
           body    (json/parse-string (:body response) #(keyword %))]
       (is (= 200 (:status response)))
       (is (= id (:id_gpu body)) "UUID deve ser igual")))
@@ -36,17 +57,20 @@
                     :id_caracteristicas_graficas "a9a17e79-fa0d-4b54-9d20-5b1a3d8f45c8"
                     :id_render_config "35f895ea-3ee1-4eb4-ae99-933511c2472f"}
           response (app (-> (mock/request :post "/api/gpus")
-                            (mock/json-body new-gpu)))]
+                            (mock/json-body new-gpu)
+                            with-auth-token))]
       (is (= 201 (:status response)))))
 
   (testing "PUT /api/gpus/:id -> deve atualizar uma GPU"
     (let [id       "669e6eb0-6528-489a-ac90-bb3670cb6a78"
           changes  {:nome_fabricante "Atualizado"}
           response (app (-> (mock/request :put (str "/api/gpus/" id))
-                            (mock/json-body changes)))]
+                            (mock/json-body changes)
+                            with-auth-token))]
       (is (= 200 (:status response)))))
 
   (testing "DELETE /api/gpus/:id -> deve remover a GPU"
     (let [id       "669e6eb0-6528-489a-ac90-bb3670cb6a78"
-          response (app (mock/request :delete (str "/api/gpus/" id)))]
+          response (app (-> (mock/request :delete (str "/api/gpus/" id))
+                            with-auth-token))]
       (is (= 200 (:status response))))))
